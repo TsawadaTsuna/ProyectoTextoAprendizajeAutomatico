@@ -1,6 +1,7 @@
 import codecs
 from nltk.tokenize import word_tokenize as wt
 from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 def Tokeniza(doc,dicc):
     #print(dicc)
 	docto=codecs.open(doc,'r')
@@ -42,8 +43,8 @@ def obtencionVoc(doc,minFreq=1,maxFreq=5000):
 	print(doc+"--> "+str(Frec1))
 
 #categorias y lemas 
+Lematizar=WordNetLemmatizer()
 def Lemas(doc,dicc):
-    Lematizar=WordNetLemmatizer()
     docto=codecs.open(doc,'r')
     Salida = codecs.open('Documentos/Lemas.txt', "w")
     for x in docto.readlines():
@@ -60,6 +61,23 @@ def Lemas(doc,dicc):
             Salida.write(f'{id}\t{lemas}\t{dicc[datos[0]]}')
     docto.close()
     Salida.close()
+
+#Stemmiong probando 
+ps = PorterStemmer()
+def Stemming(doc):
+	docto=codecs.open(doc,'r')
+	Salida=codecs.open(doc+'-Sttemming.txt','w')
+	for x in docto.readlines():
+		if len(x)>1:
+			datos=x.split('\t')
+			Texto=datos[1].lower().split(' ')
+			CadFinal=""
+			for w in Texto:
+				# print(w, ": ", ps.stem(w))
+				CadFinal=CadFinal+ps.stem(w)+' '
+			Salida.write(datos[0]+'\t'+CadFinal[1:]+'\t'+datos[2])
+	docto.close()
+	Salida.close()
 
 
 def destringifyTupleData(d):
@@ -125,22 +143,40 @@ docclases.close()
 #print(clasesdicc)
 
 #Tokeniza("Documentos/English.txt",clasesdicc)
-obtencionVoc("Documentos/tokenizacion.txt",50,2000)
-#Lemas("Documentos/English.txt",clasesdicc)
+#obtencionVoc("Documentos/tokenizacion.txt",50,2000)
+Lemas("Documentos/English.txt",clasesdicc)
+Stemming("Documentos/Lemas.txt")
+obtencionVoc("Documentos/Lemas.txt",50,2000)
+obtencionVoc("Documentos/Lemas.txt-Sttemming.txt",50,2000)
 
 
-Entrada="tokenizacion.txt"
+Entrada="Lemas.txt"
 Atrib=[]
 CadAtrib=''
 #Leer el vocabulario para obtener los atributos
-"""
+
 DocCar=codecs.open('Documentos/'+Entrada+'Voc.csv','r')
 Atrib,CadAtrib=ObtenListaAtrib(DocCar)
 print(str(len(Atrib)))
 DocCar.close()
 
 
-docToCSV=codecs.open("Documentos/tokenizacion.txt",'r')
+docToCSV=codecs.open("Documentos/Lemas.txt",'r')
 ObtenDocto(docToCSV)
 docToCSV.close()
-"""
+
+Entrada="Lemas.txt-Sttemming.txt"
+Atrib=[]
+CadAtrib=''
+#Leer el vocabulario para obtener los atributos
+
+DocCar=codecs.open('Documentos/'+Entrada+'Voc.csv','r')
+Atrib,CadAtrib=ObtenListaAtrib(DocCar)
+print(str(len(Atrib)))
+DocCar.close()
+
+
+docToCSV=codecs.open("Documentos/Lemas.txt-Sttemming.txt",'r')
+ObtenDocto(docToCSV)
+docToCSV.close()
+
