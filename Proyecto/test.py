@@ -16,7 +16,7 @@ def Tokeniza(doc,dicc):
 	Salida.close()
     
 #AGREGAR UNA VARIANTE QUE ELIMINE FRECUENCIA SIMPLE
-def obtencionVoc(doc):
+def obtencionVoc(doc,minFreq=1):
 	docto=codecs.open(doc,'r')
 	Voc={}
 	for x in docto.readlines():
@@ -34,7 +34,8 @@ def obtencionVoc(doc):
 	DocVoc=codecs.open(doc+'Voc.csv','w')
 	Frec1=0
 	for x in Voc:
-		DocVoc.write(x+","+str(Voc[x])+",\n")
+		if Voc[x] >= minFreq:
+			DocVoc.write(x+","+str(Voc[x])+",\n")
 		if Voc[x]==1:
 			Frec1+=1
 	DocVoc.close()
@@ -124,8 +125,8 @@ docclases.close()
 #print(clasesdicc)
 
 #Tokeniza("Documentos/English.txt",clasesdicc)
-#obtencionVoc("Documentos/tokenizacion.txt")
-Lemas("Documentos/English.txt",clasesdicc)
+obtencionVoc("Documentos/tokenizacion.txt",2)
+#Lemas("Documentos/English.txt",clasesdicc)
 
 
 Entrada="tokenizacion.txt"
